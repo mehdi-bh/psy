@@ -1,0 +1,112 @@
+service: psy-core
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: eu-west-3
+  environment:
+    DYNAMODB_TABLE: PsyDB
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+          Resource: arn:aws:dynamodb:eu-west-3:335835489790:table/PsyDB
+
+resources:
+  Resources:
+    MentalHealthcareSaaS:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: PsyDB
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+          - AttributeName: GSI1_PK
+            AttributeType: S
+          - AttributeName: GSI1_SK
+            AttributeType: S
+          - AttributeName: GSI2_PK
+            AttributeType: S
+          - AttributeName: GSI2_SK
+            AttributeType: S
+          - AttributeName: GSI3_PK
+            AttributeType: S
+          - AttributeName: GSI3_SK
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: GSI1
+            KeySchema:
+              - AttributeName: GSI1_PK
+                KeyType: HASH
+              - AttributeName: GSI1_SK
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+          - IndexName: GSI2
+            KeySchema:
+              - AttributeName: GSI2_PK
+                KeyType: HASH
+              - AttributeName: GSI2_SK
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+          - IndexName: GSI3
+            KeySchema:
+              - AttributeName: GSI3_PK
+                KeyType: HASH
+              - AttributeName: GSI3_SK
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+functions:
+  createPatient:
+    handler: handler.handler
+    events:
+      - http:
+          path: patient
+          method: post
+
+  getPatient:
+    handler: handler.handler
+    events:
+      - http:
+          path: patient/{id}
+          method: get
+
+plugins:
+  - serverless-python-requirements
+
+package:
+  exclude:
+    - node_modules/**
+    - venv/**
+    - __pycache__/**
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
