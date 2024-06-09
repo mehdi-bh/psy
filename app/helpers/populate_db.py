@@ -23,7 +23,9 @@ patient = {
         'country': 'Country'
     },
     'Description': 'A test patient',
-    'Photo': 'https://example.com/photo.jpg'
+    'Photo': 'https://example.com/photo.jpg',
+    'GSI1_PK': 'PSYCHOLOGIST#456',
+    'GSI1_SK': 'PATIENT#123'
 }
 
 psychologist = {
@@ -46,7 +48,9 @@ discussion_message = {
     'Message': 'Hello, how are you?',
     'Timestamp': '2023-01-01T12:00:00Z',
     'Sender': 'Patient',
-    'Seen': False
+    'Seen': False,
+    'GSI1_PK': 'PSYCHOLOGIST#456',
+    'GSI1_SK': 'DISCUSSION#123#2023-01-01T12:00:00Z'
 }
 
 discussion_message_2 = {
@@ -58,7 +62,9 @@ discussion_message_2 = {
     'Message': 'Hello, how are you?',
     'Timestamp': '2023-01-01T12:10:10Z',
     'Sender': 'Patient',
-    'Seen': False
+    'Seen': False,
+    'GSI1_PK': 'PSYCHOLOGIST#456',
+    'GSI1_SK': 'DISCUSSION#123#2023-01-01T12:10:10Z'
 }
 
 consultation = {
@@ -70,17 +76,24 @@ consultation = {
     'DateTime': '2023-01-15T10:00:00Z',
     'GoogleMeetLink': 'https://meet.google.com/example',
     'Status': 'Scheduled',
-    'InvoiceId': '151617'
+    'InvoiceId': '151617',
+    'GSI1_PK': 'PSYCHOLOGIST#456',
+    'GSI1_SK': 'CONSULTATION#123#2023-01-15T10:00:00Z'
 }
 
 invoice = {
     'PK': 'INVOICE#151617',
     'SK': 'METADATA',
     'InvoiceId': '151617',
+    'PatientId': '123',
+    'PsychologistId': '456',
+    'ConsultationId': '101112',
     'Status': 'Not Paid',
     'Amount': Decimal('100.0'),
     'PaymentLink': 'https://payment.example.com',
-    'PDF': 'https://example.com/invoice.pdf'
+    'PDF': 'https://example.com/invoice.pdf',
+    'GSI1_PK': 'PSYCHOLOGIST#456',
+    'GSI1_SK': 'INVOICE#123#151617'
 }
 
 # List of all items to put in the database
@@ -91,3 +104,5 @@ for item in items:
     table.put_item(Item=item)
 
 print("Database populated with sample data.")
+
+

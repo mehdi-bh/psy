@@ -8,6 +8,8 @@ def create_patient(patient: PatientCreate):
     item = patient.model_dump()
     item['PK'] = f"PATIENT#{patient.PatientId}"
     item['SK'] = "METADATA"
+    item['GSI1_PK'] = f"PSYCHOLOGIST#{patient.PsychologistId}"
+    item['GSI1_SK'] = f"PATIENT#{patient.PatientId}"
     table.put_item(Item=item)
     return patient
 
@@ -19,3 +21,16 @@ def get_patient(patient_id: str):
         }
     )
     return response.get('Item')
+
+def get_patients_by_psychologist(psychologist_id: str):
+    response = table.query(
+        IndexName='GSI1',
+        KeyConditionExpression="GSI1_PK = :pk AND begins_with(GSI1_SK, :sk)",
+        ExpressionAttributeValues={
+            ":pk": f"PSYCHOLOGIST#{psychologist_id}",
+            ":sk": "PATIENT#"
+        }
+    )
+    return response.get('Items', [])
+
+

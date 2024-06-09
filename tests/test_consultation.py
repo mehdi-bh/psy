@@ -16,8 +16,14 @@ def test_create_consultation():
     assert response.status_code == 200
     assert response.json()["ConsultationId"] == "101112"
 
-def test_get_consultation():
-    response = client.get("/consultation/456/123")
+def test_get_consultations_by_psychologist_patient():
+    response = client.get("/consultations/456/123")
     assert response.status_code == 200
     assert len(response.json()) > 0
     assert response.json()[0]["ConsultationId"] == "101112"
+
+def test_get_consultations_by_psychologist():
+    response = client.get("/consultations/psychologist/456")
+    assert response.status_code == 200
+    assert len(response.json()) > 0
+    assert response.json()[0]["PsychologistId"] == "456"

@@ -1,5 +1,12 @@
+import logging
 from fastapi import FastAPI
-from app.controllers import patient_controller, psychologist_controller, discussion_message_controller, consultation_controller, invoice_controller
+from app.controllers import (
+    patient_controller, psychologist_controller, discussion_message_controller,
+    consultation_controller, invoice_controller
+)
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 

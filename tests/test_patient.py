@@ -20,7 +20,8 @@ def test_create_patient():
             "country": "Country"
         },
         "Description": "A test patient",
-        "Photo": "http://example.com/photo.jpg"
+        "Photo": "https://example.com/photo.jpg",
+        "PsychologistId": "456"
     })
     assert response.status_code == 200
     assert response.json()["PatientId"] == "123"
@@ -29,3 +30,9 @@ def test_get_patient():
     response = client.get("/patient/123")
     assert response.status_code == 200
     assert response.json()["PatientId"] == "123"
+
+def test_get_patients_by_psychologist():
+    response = client.get("/patients/psychologist/456")
+    assert response.status_code == 200
+    assert len(response.json()) > 0
+    assert response.json()[0]["PatientId"] == "123"

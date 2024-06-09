@@ -11,6 +11,7 @@ class PatientBase(BaseModel):
     Address: Dict[str, str]
     Description: Optional[str] = None
     Photo: Optional[str] = None
+    PsychologistId: str
 
 class PatientCreate(PatientBase):
     PatientId: str

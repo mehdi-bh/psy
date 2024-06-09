@@ -16,8 +16,14 @@ def test_create_discussion_message():
     assert response.status_code == 200
     assert response.json()["MessageId"] == "789"
 
-def test_get_discussion_message():
-    response = client.get("/discussion_message/456/123")
+def test_get_discussion_messages_psychologist_patient():
+    response = client.get("/discussion_messages/456/123")
+    assert response.status_code == 200
+    assert len(response.json()) > 0
+    assert response.json()[0]["MessageId"] == "789"
+
+def test_get_discussion_messages_psychologist():
+    response = client.get("/discussion_messages/psychologist/456")
     assert response.status_code == 200
     assert len(response.json()) > 0
     assert response.json()[0]["MessageId"] == "789"
