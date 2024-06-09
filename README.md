@@ -5,11 +5,10 @@
 
 ### How to run locally
 - `uvicorn app.main:app --reload`
+- Swagger : http://127.0.0.1:8000/docs
 
 ### How to deploy
 - `serverless deploy`
 
 ### How to run tests
 - `pytest`
-
-

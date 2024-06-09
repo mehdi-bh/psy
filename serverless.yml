@@ -19,7 +19,7 @@ provider:
 
 resources:
   Resources:
-    MentalHealthcareSaaS:
+    PsyDB:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: PsyDB
@@ -96,6 +96,62 @@ functions:
     events:
       - http:
           path: patient/{id}
+          method: get
+
+  createPsychologist:
+    handler: handler.handler
+    events:
+      - http:
+          path: psychologist
+          method: post
+
+  getPsychologist:
+    handler: handler.handler
+    events:
+      - http:
+          path: psychologist/{id}
+          method: get
+
+  createDiscussionMessage:
+    handler: handler.handler
+    events:
+      - http:
+          path: discussion_message
+          method: post
+
+  getDiscussionMessage:
+    handler: handler.handler
+    events:
+      - http:
+          path: discussion_message/{psychologist_id}/{patient_id}
+          method: get
+
+  createConsultation:
+    handler: handler.handler
+    events:
+      - http:
+          path: consultation
+          method: post
+
+  getConsultation:
+    handler: handler.handler
+    events:
+      - http:
+          path: consultation/{psychologist_id}/{patient_id}
+          method: get
+
+  createInvoice:
+    handler: handler.handler
+    events:
+      - http:
+          path: invoice
+          method: post
+
+  getInvoice:
+    handler: handler.handler
+    events:
+      - http:
+          path: invoice/{id}
           method: get
 
 plugins:

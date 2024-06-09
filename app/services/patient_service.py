@@ -5,7 +5,7 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('PsyDB')
 
 def create_patient(patient: PatientCreate):
-    item = patient.dict()
+    item = patient.model_dump()
     item['PK'] = f"PATIENT#{patient.PatientId}"
     item['SK'] = "METADATA"
     table.put_item(Item=item)
