@@ -15,6 +15,7 @@ provider:
           Action:
             - dynamodb:PutItem
             - dynamodb:GetItem
+            - dynamodb:Query
           Resource: arn:aws:dynamodb:eu-west-3:335835489790:table/PsyDB
 
 resources:
@@ -68,6 +69,13 @@ functions:
           path: patient/{id}
           method: get
 
+  getPatientsByPsychologist:
+    handler: handler.handler
+    events:
+      - http:
+          path: patients/psychologist/{psychologist_id}
+          method: get
+
   createPsychologist:
     handler: handler.handler
     events:
@@ -89,11 +97,18 @@ functions:
           path: discussion_message
           method: post
 
-  getDiscussionMessage:
+  getDiscussionMessagesByPsychologist:
     handler: handler.handler
     events:
       - http:
-          path: discussion_message/{psychologist_id}/{patient_id}
+          path: discussion_messages/psychologist/{psychologist_id}
+          method: get
+
+  getDiscussionMessagesPsychologistPatient:
+    handler: handler.handler
+    events:
+      - http:
+          path: discussion_messages/{psychologist_id}/{patient_id}
           method: get
 
   createConsultation:
@@ -103,11 +118,18 @@ functions:
           path: consultation
           method: post
 
-  getConsultation:
+  getConsultationsByPsychologist:
     handler: handler.handler
     events:
       - http:
-          path: consultation/{psychologist_id}/{patient_id}
+          path: consultations/psychologist/{psychologist_id}
+          method: get
+
+  getConsultationsPsychologistPatient:
+    handler: handler.handler
+    events:
+      - http:
+          path: consultations/{psychologist_id}/{patient_id}
           method: get
 
   createInvoice:
@@ -122,6 +144,20 @@ functions:
     events:
       - http:
           path: invoice/{id}
+          method: get
+
+  getInvoicesByPsychologist:
+    handler: handler.handler
+    events:
+      - http:
+          path: invoices/psychologist/{psychologist_id}
+          method: get
+
+  getInvoicesPsychologistPatient:
+    handler: handler.handler
+    events:
+      - http:
+          path: invoices/{psychologist_id}/{patient_id}
           method: get
 
 plugins:
