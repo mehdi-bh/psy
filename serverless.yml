@@ -8,6 +8,8 @@ provider:
   region: eu-west-3
   environment:
     DYNAMODB_TABLE: PsyDB
+    WEBSOCKET_CONNECTIONS_TABLE: WebSocketConnections
+    IS_OFFLINE: ${env:IS_OFFLINE, 'false'}
   iam:
     role:
       statements:
@@ -16,8 +18,11 @@ provider:
             - dynamodb:PutItem
             - dynamodb:GetItem
             - dynamodb:Query
+            - dynamodb:DeleteItem
+            - dynamodb:Scan
           Resource:
             - arn:aws:dynamodb:eu-west-3:335835489790:table/PsyDB
+            - arn:aws:dynamodb:eu-west-3:335835489790:table/WebSocketConnections
             - arn:aws:dynamodb:eu-west-3:335835489790:table/PsyDB/index/GSI1
 
 resources:
@@ -52,6 +57,20 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 5
               WriteCapacityUnits: 5
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    WebSocketConnections:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: WebSocketConnections
+        AttributeDefinitions:
+          - AttributeName: connectionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: connectionId
+            KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
@@ -162,6 +181,30 @@ functions:
           path: invoices/{psychologist_id}/{patient_id}
           method: get
 
+  websocketConnect:
+    handler: websocket.connect
+    events:
+      - websocket:
+          route: $connect
+
+  websocketDisconnect:
+    handler: websocket.disconnect
+    events:
+      - websocket:
+          route: $disconnect
+
+  websocketDefault:
+    handler: websocket.default
+    events:
+      - websocket:
+          route: $default
+
+  sendMessage:
+    handler: websocket.send_message
+    events:
+      - websocket:
+          route: sendMessage
+
 plugins:
   - serverless-python-requirements
   - serverless-offline
@@ -175,3 +218,6 @@ package:
 custom:
   pythonRequirements:
     dockerizePip: true
+  serverless-offline:
+      environment:
+        IS_OFFLINE: true
