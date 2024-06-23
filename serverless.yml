@@ -16,7 +16,9 @@ provider:
             - dynamodb:PutItem
             - dynamodb:GetItem
             - dynamodb:Query
-          Resource: arn:aws:dynamodb:eu-west-3:335835489790:table/PsyDB
+          Resource:
+            - arn:aws:dynamodb:eu-west-3:335835489790:table/PsyDB
+            - arn:aws:dynamodb:eu-west-3:335835489790:table/PsyDB/index/GSI1
 
 resources:
   Resources:
@@ -162,6 +164,7 @@ functions:
 
 plugins:
   - serverless-python-requirements
+  - serverless-offline
 
 package:
   exclude:

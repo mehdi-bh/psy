@@ -4,6 +4,9 @@
 - `pip install -r requirements.txt`
 
 ### How to run locally
+- `serverless offline`
+
+OR you can also do this:
 - `uvicorn app.main:app --reload`
 - Swagger : http://127.0.0.1:8000/docs
 
