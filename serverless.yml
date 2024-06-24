@@ -24,6 +24,11 @@ provider:
             - arn:aws:dynamodb:eu-west-3:335835489790:table/PsyDB
             - arn:aws:dynamodb:eu-west-3:335835489790:table/WebSocketConnections
             - arn:aws:dynamodb:eu-west-3:335835489790:table/PsyDB/index/GSI1
+        - Effect: Allow
+          Action:
+            - execute-api:ManageConnections
+          Resource:
+            - arn:aws:execute-api:eu-west-3:335835489790:yme9o8ixtg/*/POST/@connections/*
 
 resources:
   Resources:
@@ -219,5 +224,4 @@ custom:
   pythonRequirements:
     dockerizePip: true
   serverless-offline:
-      environment:
-        IS_OFFLINE: true
+    port: 3001
