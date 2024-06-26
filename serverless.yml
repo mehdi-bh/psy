@@ -191,25 +191,25 @@ functions:
           method: get
 
   websocketConnect:
-    handler: websocket.connect
+    handler: app/websocket/handler.connect
     events:
       - websocket:
           route: $connect
 
   websocketDisconnect:
-    handler: websocket.disconnect
+    handler: app/websocket/handler.disconnect
     events:
       - websocket:
           route: $disconnect
 
   websocketDefault:
-    handler: websocket.default
+    handler: app/websocket/handler.default
     events:
       - websocket:
           route: $default
 
   sendMessage:
-    handler: websocket.send_message
+    handler: app/websocket/handler.send_message
     events:
       - websocket:
           route: sendMessage
