@@ -9,6 +9,7 @@ patient = {
     'PK': 'PATIENT#123',
     'SK': 'METADATA',
     'PatientId': '123',
+    'PsychologistId': '456',
     'FirstName': 'John',
     'LastName': 'Doe',
     'DateOfBirth': '1990-01-01',

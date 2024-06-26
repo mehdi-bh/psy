@@ -14,7 +14,13 @@ psy_db_table = dynamodb.Table('PsyDB')
 
 def connect(event, context):
     connection_id = event['requestContext']['connectionId']
-    connections_table.put_item(Item={'connectionId': connection_id})
+    user_id = event['queryStringParameters']['userId']
+    user_type = event['queryStringParameters']['userType']
+
+    pk = f"{user_type}#{user_id}"
+
+    connections_table.put_item(Item={'PK': pk, 'connectionId': connection_id})
+
     return {
         'statusCode': 200,
         'body': 'Connected.'
@@ -23,7 +29,15 @@ def connect(event, context):
 
 def disconnect(event, context):
     connection_id = event['requestContext']['connectionId']
-    connections_table.delete_item(Key={'connectionId': connection_id})
+    response = connections_table.scan(
+        FilterExpression='connectionId = :connectionId',
+        ExpressionAttributeValues={':connectionId': connection_id}
+    )
+    items = response.get('Items', [])
+    logger.info(items)
+    for item in items:
+        connections_table.delete_item(Key={'PK': item['PK'], 'connectionId': item['connectionId']})
+
     return {
         'statusCode': 200,
         'body': 'Disconnected.'
@@ -71,8 +85,18 @@ def send_message(event, context):
 
     apig_management_client = boto3.client('apigatewaymanagementapi', endpoint_url=endpoint_url)
 
-    # Retrieve all active connections
-    connections = connections_table.scan().get('Items', [])
+    # Retrieve all active connections for the relevant psychologist and patient
+    psychologist_connections = connections_table.query(
+        KeyConditionExpression='PK = :pk',
+        ExpressionAttributeValues={':pk': f"PSYCHOLOGIST#{message_data['PsychologistId']}"}
+    ).get('Items', [])
+
+    patient_connections = connections_table.query(
+        KeyConditionExpression='PK = :pk',
+        ExpressionAttributeValues={':pk': f"PATIENT#{message_data['PatientId']}"}
+    ).get('Items', [])
+
+    connections = psychologist_connections + patient_connections
     logger.info(f"Active connections: {connections}")
 
     for conn in connections:
@@ -84,7 +108,7 @@ def send_message(event, context):
             )
         except apig_management_client.exceptions.GoneException:
             logger.warning(f"Connection {conn['connectionId']} is gone, deleting from database.")
-            connections_table.delete_item(Key={'connectionId': conn['connectionId']})
+            connections_table.delete_item(Key={'PK': conn['PK'], 'connectionId': conn['connectionId']})
         except ClientError as e:
             error_code = e.response['Error']['Code']
             error_message = e.response['Error']['Message']
@@ -102,4 +126,3 @@ def send_message(event, context):
         'statusCode': 200,
         'body': 'Message sent.'
     }
-

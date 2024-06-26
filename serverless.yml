@@ -66,16 +66,20 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
 
-    WebSocketConnections:
+    WebSocketConnectionsDB:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: WebSocketConnections
         AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
           - AttributeName: connectionId
             AttributeType: S
         KeySchema:
-          - AttributeName: connectionId
+          - AttributeName: PK
             KeyType: HASH
+          - AttributeName: connectionId
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
