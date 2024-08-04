@@ -18,3 +18,15 @@ class PatientCreate(PatientBase):
 
 class Patient(PatientBase):
     PatientId: str
+
+class PatientUpdate(BaseModel):
+    FirstName: Optional[str] = None
+    LastName: Optional[str] = None
+    DateOfBirth: Optional[str] = None
+    Sex: Optional[str] = None
+    Email: Optional[str] = None
+    PhoneNumber: Optional[str] = None
+    Address: Optional[Dict[str, str]] = None
+    Description: Optional[str] = None
+    Photo: Optional[str] = None
+    PsychologistId: Optional[str] = None

@@ -1,5 +1,5 @@
 import boto3
-from app.schemas.patient import PatientCreate
+from app.schemas.patient import PatientCreate, PatientUpdate
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('PsyDB')
@@ -33,4 +33,14 @@ def get_patients_by_psychologist(psychologist_id: str):
     )
     return response.get('Items', [])
 
+def update_patient(patient_id: str, patient_update: PatientUpdate):
+    patient = get_patient(patient_id)
+    if not patient:
+        return None
 
+    updated_fields = patient_update.model_dump(exclude_unset=True)
+    for key, value in updated_fields.items():
+        patient[key] = value
+
+    table.put_item(Item=patient)
+    return patient

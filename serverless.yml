@@ -92,6 +92,13 @@ functions:
           path: patient
           method: post
 
+  updatePatient:
+    handler: handler.handler
+    events:
+      - http:
+          path: patient/{id}
+          method: put
+
   getPatient:
     handler: handler.handler
     events:
